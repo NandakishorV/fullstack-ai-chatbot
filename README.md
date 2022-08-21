@@ -1,9 +1,9 @@
 # CHATBOT
 
-### Done using Python, Redis and Fastapi 
+  Done using Python, Redis and Fastapi 
 
--uses Huggingface ai for response generation
--uses POSTMAN for creating tokens and sending messages using generated tokens
+- uses Huggingface ai for response generation
+- uses POSTMAN for creating tokens and sending messages using generated tokens
 
 ### POSTMAN Setup
 
