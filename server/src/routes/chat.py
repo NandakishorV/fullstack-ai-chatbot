@@ -1,5 +1,5 @@
 import os
-from fastapi import APIRouter, FastAPI, WebSocket,  Request,Depends
+from fastapi import APIRouter, FastAPI, WebSocket,  Request,Depends, WebSocketDisconnect
 import uuid
 from rejson import Path
 from ..socket.connection import ConnectionManager
@@ -8,6 +8,7 @@ from ..redis.producer import Producer
 from ..redis.config import Redis
 from ..schema.chat import Chat
 from ..redis.stream import StreamConsumer
+from ..redis.cache import Cache
 
 manager = ConnectionManager()
 chat = APIRouter()
@@ -50,8 +51,16 @@ async def token_generator(name: str, request: Request):
 # @access  Public
 
 @chat.post("/refresh_token")
-async def refresh_token(request: Request):
-    return None
+async def refresh_token(request: Request, token: str):
+    json_client = redis.create_rejson_connection()
+    cache = Cache(json_client)
+    data = await cache.get_chat_history(token)
+
+    if data == None:
+        raise HTTPException(
+            status_code=400, detail="Session expired or does not exist")
+    else:
+        return data
 
 
 # @route   Websocket /chat
@@ -72,7 +81,7 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Depends(get_toke
             stream_data = {}
             stream_data[str(token)] = str(data)
             await producer.add_to_stream(stream_data, "message_channel")
-            response = await consumer.consume_stream(stream_channel="response_channel", block=0)
+            response = await consumer.consume_stream(stream_channel="response_channel", block=0,count=4)
 
             print(response)
             for stream, messages in response:
