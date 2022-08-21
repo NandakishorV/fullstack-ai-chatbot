@@ -28,7 +28,7 @@ class GPT:
         data = json.loads(response.content.decode("utf-8"))
         text = data[0]['generated_text']
         res = str(text.split("Human:")[0]).strip("\n").strip()
-        print(res)
+        return res
 
 
 if __name__ == "__main__":
