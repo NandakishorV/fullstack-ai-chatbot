@@ -27,5 +27,3 @@
 - VIEW CONVERSATION
 ![redis client conversation json](https://user-images.githubusercontent.com/80710226/185797465-e7297ec4-34c5-4171-b158-914d0ce7a392.JPG)
 
-
-###### [REFERENCES] https://www.freecodecamp.org/news/how-to-build-an-ai-chatbot-with-redis-python-and-gpt/
